@@ -309,6 +309,7 @@ int main() {
         << "(D) - Delete element\n";
 
         List* foundedItem = NULL;
+        int index, data;
         char actionType;
         char choiseType;
         cin >> actionType;
@@ -324,7 +325,6 @@ int main() {
           }
           if (choiseType == 'I' || choiseType == 'i') {
             cout << "Enter an index of element (length is " << countLength(list) << "): ";
-            int index;
             cin >> index;
             if (!cin.good()) {
               cout << "\nYou entered an incorrect value\n";
@@ -338,7 +338,6 @@ int main() {
             printNode(foundedItem);
           } else {
             cout << "Enter a value of element: ";
-            int data;
             cin >> data;
             if (!cin.good()) {
               cout << "\nYou entered an incorrect value\n";
@@ -350,6 +349,22 @@ int main() {
         case 'I':
           break;
         case 'S':
+          cout << "Enter an index of first element (length is " << countLength(list) << "): ";
+          cin >> index;
+          if (!cin.good()) {
+            cout << "\nYou entered an incorrect value\n";
+            break;
+          }
+          cout << "Enter an index of second element (length is " << countLength(list) << "): ";
+          int index2;
+          cin >> index2;
+          if (!cin.good()) {
+            cout << "\nYou entered an incorrect value\n";
+            break;
+          }
+          swapElementsByIndex(list, index, index2);
+          cout << "\nUpdated list:\n";
+          printList(list);
           break;
         case 'D':
           cout << "By index or by value (I/V)?: ";
@@ -360,7 +375,6 @@ int main() {
           }
           if (choiseType == 'I' || choiseType == 'i') {
             cout << "Enter an index of element (length is " << countLength(list) << "): ";
-            int index;
             cin >> index;
             if (!cin.good()) {
               cout << "\nYou entered an incorrect value\n";
@@ -369,7 +383,6 @@ int main() {
             delItemByIndex(list, index);
           } else {
             cout << "Enter a value of element: ";
-            int data;
             cin >> data;
             if (!cin.good()) {
               cout << "\nYou entered an incorrect value\n";
@@ -377,7 +390,7 @@ int main() {
             }
             delItemByValue(list, data);
           }
-          cout << "Updated list (length is " << countLength(list) << "):\n";
+          cout << "\nUpdated list (length is " << countLength(list) << "):\n";
           printList(list);
           break;
         default:
