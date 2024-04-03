@@ -30,18 +30,34 @@ bool checkIndex(List* &arr, int idx) {
   return (idx >= 0 && idx < countLength(arr));
 }
 
+void printNode(List* curr) {
+  cout << "\nItem\n"
+  << " Data: " << curr->data << "\n"
+  << " Tail: " << curr->tail << "\n"
+  << " Addr: " << curr << "\n"
+  << " Head: " << curr->head << "\n";
+}
 
 List* findItemByIndex(List* &arr, unsigned idx) {
   List* curr = arr;
   int counter = 0;
 
-  if (!checkIndex(arr ,idx)) return NULL;
+  if (!checkIndex(arr, idx)) return NULL;
   while (curr) {
     if (counter == idx) return curr;
     curr = curr->tail;
     counter++;
   }
   return NULL;
+}
+
+void findItemsByData(List* &arr, int data) {
+  List* curr = arr;
+
+  while (curr) {
+    if (curr->data == data) printNode(curr);
+    curr = curr->tail;
+  }
 }
 
 int getIndexOfItem(List* arr, int item, int startIdx = 0) {
@@ -216,11 +232,7 @@ void swapElementsByIndex(List* &arr, int index1, int index2) {
 void printList(List* &arr) {
   List* curr = arr;
   while (curr) {
-    cout << "\nItem\n"
-    << " Data: " << curr->data << "\n"
-    << " Tail: " << curr->tail << "\n"
-    << " Addr: " << curr << "\n"
-    << " Head: " << curr->head << "\n";
+    printNode(curr);
     curr = curr->tail;
   }
 }
@@ -237,7 +249,6 @@ int main() {
   << "4) Tiiime" << "\n"
   << "5) Print list" << "\n";
   
-  unsigned int listSize = 0;
   List *list = NULL;
 
   while(true) {
@@ -251,9 +262,9 @@ int main() {
     switch (workPoint)
     {   
       case 1: {
-        cout << "bukvy vibery plz (eng)\n"
-        << "(A) - enter the dimension and fill it with random\n"
-        << "(B) - enter the number yourself skok hosh\n";
+        cout << "Choose the way (eng)\n"
+        << "(A) - Enter the dimension and fill it with random\n"
+        << "(B) - Enter the number yourself skok hosh\n";
         char creatingType;
         cin >> creatingType;
         if (!cin.good()) {
@@ -262,16 +273,15 @@ int main() {
         }
         if (creatingType == 'B' || creatingType == 'b') {
           cout << "Enter items, to stop it - enter any char\n";
-          listSize = 0;
           list = NULL;
           int item;
-          while (cin >> item) {
-            addItem(list, item);
-            listSize++;
-          }
-          cout << "\nList length: " << listSize << "\n";
+
+          while (cin >> item) addItem(list, item);
+        
+          cout << "\nList length: " << countLength(list) << "\n";
         } else {
           cout << "\nEnter elements count: ";
+          unsigned listSize = 0;
           cin >> listSize;
           if (!cin.good()) {
             cout << "\nYou entered an incorrect value\n";
@@ -284,6 +294,7 @@ int main() {
             curr = curr->tail;
           }
         }
+        printList(list);
         break;
       }
       case 2: {
@@ -296,13 +307,12 @@ int main() {
         << "(I) - Insert element\n"
         << "(S) - Swap elements\n"
         << "(D) - Delete element\n";
+
+        List* foundedItem = NULL;
         char actionType;
         char choiseType;
         cin >> actionType;
-        if (!cin.good()) {
-          cout << "\nYou entered an incorrect value\n";
-          break;
-        }
+
         switch (actionType)
         {
         case 'G':
@@ -313,18 +323,65 @@ int main() {
             break;
           }
           if (choiseType == 'I' || choiseType == 'i') {
-            cout << "Enter an index of element (length is " << listSize << "): ";
+            cout << "Enter an index of element (length is " << countLength(list) << "): ";
             int index;
             cin >> index;
             if (!cin.good()) {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
-            findItemByIndex(list, index);
+            foundedItem = findItemByIndex(list, index);
+            if (!foundedItem) {
+              cout << "\nYou entered an incorrect value\n";
+              break;
+            }
+            printNode(foundedItem);
+          } else {
+            cout << "Enter a value of element: ";
+            int data;
+            cin >> data;
+            if (!cin.good()) {
+              cout << "\nYou entered an incorrect value\n";
+              break;
+            }
+            findItemsByData(list, data);
           }
           break;
-        
+        case 'I':
+          break;
+        case 'S':
+          break;
+        case 'D':
+          cout << "By index or by value (I/V)?: ";
+          cin >> choiseType;
+          if (!cin.good()) {
+            cout << "\nYou entered an incorrect value\n";
+            break;
+          }
+          if (choiseType == 'I' || choiseType == 'i') {
+            cout << "Enter an index of element (length is " << countLength(list) << "): ";
+            int index;
+            cin >> index;
+            if (!cin.good()) {
+              cout << "\nYou entered an incorrect value\n";
+              break;
+            }
+            delItemByIndex(list, index);
+          } else {
+            cout << "Enter a value of element: ";
+            int data;
+            cin >> data;
+            if (!cin.good()) {
+              cout << "\nYou entered an incorrect value\n";
+              break;
+            }
+            delItemByValue(list, data);
+          }
+          cout << "Updated list (length is " << countLength(list) << "):\n";
+          printList(list);
+          break;
         default:
+          cout << "\nYou entered an incorrect value\n";
           break;
         }
         break;
