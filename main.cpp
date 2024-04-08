@@ -118,25 +118,36 @@ List* addItem(List* &beg, int data) {
   return item;
 }
 
-List* insItem( List* &beg, int index )
+List* insItem( List* &beg, unsigned index, int data=NULL)
 {
+  if(!checkIndex(beg, index) && index != countLength(beg)) {
+    cout << "\nIncorrect index value\n";
+    return NULL;
+  }
+
   List * item = new List;
+  if (!data) data = getRandomValueFromRange(0, 99); 
+  item->data = data;
+
   if (!index || !beg) {
-    beg -> head = item;
-    item -> head = NULL;
-    item -> tail = beg;
+    beg->head = item;
+    item->head = NULL;
+    item->tail = beg;
     beg = item;
     return item;
   }
+
   List* prevItem = beg;
   --index;
-  while (prevItem -> tail && (index--)) {
-    prevItem = prevItem -> tail; 
+  while (prevItem->tail && (index--)) {
+    prevItem = prevItem->tail; 
   }
-  item -> head = prevItem;
-  item -> tail -> head = item;
-  item -> tail = prevItem -> tail;
-  prevItem -> tail = item;
+
+  item->head = prevItem;
+  if (prevItem->tail) prevItem->tail->head = item;
+  item->tail = prevItem->tail;
+  prevItem->tail = item;
+
   return item;
 }
 
@@ -237,6 +248,18 @@ void printList(List* &arr) {
   }
 }
 
+void clearList(List* &beg) {
+  List* curr = beg;
+  while (true) {
+    if (curr->head) delItemByIndex(beg, getIndexOfItem(beg, curr->head->data)); 
+    if (!curr->tail) break; 
+    curr = curr->tail;
+  }
+  delItemByIndex(beg, getIndexOfItem(beg, curr->data)); 
+  delete beg;
+  beg = NULL;
+}
+
 
 int main() {
   setlocale(LC_ALL, "Russian");
@@ -273,7 +296,7 @@ int main() {
         }
         if (creatingType == 'B' || creatingType == 'b') {
           cout << "Enter items, to stop it - enter any char\n";
-          list = NULL;
+          clearList(list);
           int item;
 
           while (cin >> item) addItem(list, item);
@@ -347,6 +370,18 @@ int main() {
           }
           break;
         case 'I':
+          cout << "Enter an index of new element (length is " << countLength(list) << "): ";
+          cin >> index;
+          if (!cin.good()) {
+            cout << "\nYou entered an incorrect value\n";
+            break;
+          }
+          cout << "Enter a value of element (or enter any char to random): ";
+          cin >> data;
+          if (!cin.good()) insItem(list, index);
+          else insItem(list, index, data);
+
+          printList(list);
           break;
         case 'S':
           cout << "Enter an index of first element (length is " << countLength(list) << "): ";
