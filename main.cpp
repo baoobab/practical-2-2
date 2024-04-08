@@ -269,19 +269,19 @@ int main() {
 
   cout << "Navigation:" << "\n"
   << "1) Create a new list" << "\n"
-  << "2) Speeed" << "\n"
-  << "3) Operations with list" << "\n"
-  << "4) Tiiime" << "\n"
-  << "5) Print list" << "\n";
+  << "2) Operations with list" << "\n"
+  << "3) Print list" << "\n";
   
   List *list = NULL;
+  auto start = chrono::steady_clock::now();
+  auto end = chrono::steady_clock::now();
 
   while(true) {
     cin.clear(); // Clearing the input stream from possible errors
     cin.sync();
     short int workPoint;
 
-    cout << "Select point of work (number 1 to 5): ";
+    cout << "Select point of work (number 1 to 3): ";
     cin >> workPoint;
 
     switch (workPoint)
@@ -289,7 +289,7 @@ int main() {
       case 1: {
         cout << "Choose the way (eng)\n"
         << "(A) - Enter the dimension and fill it with random\n"
-        << "(B) - Enter the number yourself skok hosh\n";
+        << "(B) - Enter the numbers whatever you want\n";
         char creatingType;
         cin >> creatingType;
         if (!cin.good()) {
@@ -302,8 +302,11 @@ int main() {
           int item;
           cin.clear(); // Clearing the input stream from possible errors
           cin.sync();
+
+          start = chrono::steady_clock::now();
           while (cin >> item) addItem(list, item);
-        
+          end = chrono::steady_clock::now();
+
           cout << "\nList length: " << countLength(list) << "\n";
         } else {
           cout << "\nEnter elements count: ";
@@ -313,21 +316,21 @@ int main() {
             cout << "\nYou entered an incorrect value\n";
             break;
           }
+          
+          start = chrono::steady_clock::now();
           list = createList(listSize);
           List* curr = list;
           while (curr) {
             curr->data = getRandomValueFromRange(0, 99);
             curr = curr->tail;
           }
+          end = chrono::steady_clock::now();
         }
         printList(list);
+        cout << "Time to Create: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " mcs" << "\n";
         break;
       }
       case 2: {
-        printList(list);
-        break;
-      }
-      case 3: {
         cout << "Choose the action (eng)\n"
         << "(G) - Get element\n"
         << "(I) - Insert element\n"
@@ -338,9 +341,6 @@ int main() {
         int index, data;
         char actionType;
         char choiseType;
-
-        auto start = chrono::steady_clock::now();
-        auto end = chrono::steady_clock::now();
 
         cin >> actionType;
 
@@ -457,15 +457,12 @@ int main() {
         }
         break;
       }
-      case 4: {
-        break;
-      }
-      case 5: {
+      case 3: {
         printList(list);
         break;
       }
       default: {
-        cout << "\n" << "You did not enter a number in the range from 1 to 5";
+        cout << "\n" << "You did not enter a number in the range from 1 to 3";
         break;
       }
     }
