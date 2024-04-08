@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <chrono>
 using namespace std;
 
 
@@ -249,6 +250,7 @@ void printList(List* &arr) {
 }
 
 void clearList(List* &beg) {
+  if (!beg) return;
   List* curr = beg;
   while (true) {
     if (curr->head) delItemByIndex(beg, getIndexOfItem(beg, curr->head->data)); 
@@ -298,7 +300,8 @@ int main() {
           cout << "Enter items, to stop it - enter any char\n";
           clearList(list);
           int item;
-
+          cin.clear(); // Clearing the input stream from possible errors
+          cin.sync();
           while (cin >> item) addItem(list, item);
         
           cout << "\nList length: " << countLength(list) << "\n";
@@ -335,6 +338,10 @@ int main() {
         int index, data;
         char actionType;
         char choiseType;
+
+        auto start = chrono::steady_clock::now();
+        auto end = chrono::steady_clock::now();
+
         cin >> actionType;
 
         switch (actionType)
@@ -353,11 +360,15 @@ int main() {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
+            start = chrono::steady_clock::now();
             foundedItem = findItemByIndex(list, index);
+            end = chrono::steady_clock::now();
+
             if (!foundedItem) {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
+
             printNode(foundedItem);
           } else {
             cout << "Enter a value of element: ";
@@ -366,8 +377,11 @@ int main() {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
+            start = chrono::steady_clock::now();
             findItemsByData(list, data);
+            end = chrono::steady_clock::now();
           }
+          cout << "Time to Get: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " mcs" << "\n";
           break;
         case 'I':
           cout << "Enter an index of new element (length is " << countLength(list) << "): ";
@@ -378,10 +392,13 @@ int main() {
           }
           cout << "Enter a value of element (or enter any char to random): ";
           cin >> data;
+          start = chrono::steady_clock::now();
           if (!cin.good()) insItem(list, index);
           else insItem(list, index, data);
+          end = chrono::steady_clock::now();
 
           printList(list);
+          cout << "Time to Insert: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " mcs" << "\n";
           break;
         case 'S':
           cout << "Enter an index of first element (length is " << countLength(list) << "): ";
@@ -415,7 +432,9 @@ int main() {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
+            start = chrono::steady_clock::now();
             delItemByIndex(list, index);
+            end = chrono::steady_clock::now();
           } else {
             cout << "Enter a value of element: ";
             cin >> data;
@@ -423,10 +442,14 @@ int main() {
               cout << "\nYou entered an incorrect value\n";
               break;
             }
+            start = chrono::steady_clock::now();
             delItemByValue(list, data);
+            end = chrono::steady_clock::now();
           }
+
           cout << "\nUpdated list (length is " << countLength(list) << "):\n";
           printList(list);
+          cout << "Time to Delete: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " mcs" << "\n";
           break;
         default:
           cout << "\nYou entered an incorrect value\n";
