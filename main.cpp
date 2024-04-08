@@ -15,6 +15,7 @@ int getRandomValueFromRange(int leftLimit, int rightLimit) {
   return leftLimit + rand() % (rightLimit - leftLimit + 1);
 }
 
+// Linked list functions
 
 int countLength(List * &arr) {
   int counter = 0;
@@ -262,6 +263,39 @@ void clearList(List* &beg) {
   beg = NULL;
 }
 
+// Array functions
+
+void insArrayItem(int* &arr, unsigned &size, unsigned idx, int data){
+  size++;
+  int *res = new int[size];
+  for (int i = 0; i < idx; i++) {
+      res[i] = arr[i];
+  }
+  res[idx] = data;
+  for (int i = idx; i < size - 1; i++) {
+      res[i+1] = arr[i];
+  }
+  delete[] arr;
+  arr = res;
+}
+
+// void createArray(int* &arr, const unsigned size) {
+
+// }
+void clearArray(int* &arr, unsigned &size) {
+  delete[] arr;
+  arr = NULL;
+  size = 0;
+}
+
+void printArray(int* &arr, const int size) {
+  cout << "\n";
+  for (int i = 0; i < size; i++) {
+    cout << arr[i] << " ";
+  }
+  cout << "\n";
+}
+
 
 int main() {
   setlocale(LC_ALL, "Russian");
@@ -270,9 +304,13 @@ int main() {
   cout << "Navigation:" << "\n"
   << "1) Create a new list" << "\n"
   << "2) Operations with list" << "\n"
-  << "3) Print list" << "\n";
+  << "3) Print list" << "\n"
+  << "4) Create a new array" << "\n";
+
   
   List *list = NULL;
+  int *arr = NULL; // new int[0];
+  unsigned arrSize = 0;
   auto start = chrono::steady_clock::now();
   auto end = chrono::steady_clock::now();
 
@@ -281,7 +319,7 @@ int main() {
     cin.sync();
     short int workPoint;
 
-    cout << "Select point of work (number 1 to 3): ";
+    cout << "Select point of work (number 1 to 4): ";
     cin >> workPoint;
 
     switch (workPoint)
@@ -310,13 +348,14 @@ int main() {
           cout << "\nList length: " << countLength(list) << "\n";
         } else {
           cout << "\nEnter elements count: ";
+          clearList(list);
           unsigned listSize = 0;
           cin >> listSize;
           if (!cin.good()) {
             cout << "\nYou entered an incorrect value\n";
             break;
           }
-          
+
           start = chrono::steady_clock::now();
           list = createList(listSize);
           List* curr = list;
@@ -461,8 +500,51 @@ int main() {
         printList(list);
         break;
       }
+      case 4: {
+        cout << "Choose the way (eng)\n"
+        << "(A) - Enter the dimension and fill it with random\n"
+        << "(B) - Enter the numbers whatever you want\n";
+        unsigned curSize = 0;
+        char creatingType;
+        cin >> creatingType;
+        if (!cin.good()) {
+          cout << "\nYou entered an incorrect value\n";
+          break;
+        }
+        if (creatingType == 'B' || creatingType == 'b') {
+          cout << "Enter items, to stop it - enter any char\n";
+          int item;
+          cin.clear(); // Clearing the input stream from possible errors
+          cin.sync();
+
+          clearArray(arr, arrSize);
+          start = chrono::steady_clock::now();
+          while (cin >> item) insArrayItem(arr, curSize, curSize, item);
+          end = chrono::steady_clock::now();
+          arrSize = curSize;
+
+          cout << "\nList length: " << arrSize << "\n";
+        } else {
+          cout << "\nEnter elements count: ";
+          clearArray(arr, arrSize);
+          
+          cin >> arrSize;
+          if (!cin.good()) {
+            cout << "\nYou entered an incorrect value\n";
+            break;
+          }
+          start = chrono::steady_clock::now();
+          for (int i = 0; i < arrSize; i++) {
+            insArrayItem(arr, curSize, i, getRandomValueFromRange(0, 99));
+          }
+          end = chrono::steady_clock::now();
+        }
+        printArray(arr, arrSize);
+        cout << "Time to Create: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " mcs" << "\n";
+        break;
+      }
       default: {
-        cout << "\n" << "You did not enter a number in the range from 1 to 3";
+        cout << "\n" << "You did not enter a number in the range from 1 to 4";
         break;
       }
     }
