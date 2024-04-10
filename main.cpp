@@ -17,9 +17,10 @@ int getRandomValueFromRange(int leftLimit, int rightLimit) {
 
 // Linked list functions
 
-int countLength(List * &arr) {
+int countLength(List * &beg) {
+  if (!beg) return 0;
   int counter = 0;
-  List* curr = arr;
+  List* curr = beg;
   while (curr) {
     curr = curr->tail;
     counter++;
@@ -28,8 +29,8 @@ int countLength(List * &arr) {
 }
 
 
-bool checkIndex(List* &arr, int idx) {
-  return (idx >= 0 && idx < countLength(arr));
+bool checkIndex(List* &beg, int idx) {
+  return (idx >= 0 && idx < countLength(beg));
 }
 
 void printNode(List* curr) {
@@ -40,11 +41,11 @@ void printNode(List* curr) {
   << " Head: " << curr->head << "\n";
 }
 
-List* findItemByIndex(List* &arr, unsigned idx) {
-  List* curr = arr;
+List* findItemByIndex(List* &beg, unsigned idx) {
+  List* curr = beg;
   int counter = 0;
 
-  if (!checkIndex(arr, idx)) return NULL;
+  if (!checkIndex(beg, idx)) return NULL;
   while (curr) {
     if (counter == idx) return curr;
     curr = curr->tail;
@@ -53,8 +54,8 @@ List* findItemByIndex(List* &arr, unsigned idx) {
   return NULL;
 }
 
-void printItemsByData(List* &arr, int data) {
-  List* curr = arr;
+void printItemsByData(List* &beg, int data) {
+  List* curr = beg;
 
   while (curr) {
     if (curr->data == data) printNode(curr);
@@ -62,10 +63,10 @@ void printItemsByData(List* &arr, int data) {
   }
 }
 
-int getIndexOfItem(List* arr, int item, int startIdx = 0) {
-  List* curr = arr;
+int getIndexOfItem(List* beg, int item, int startIdx = 0) {
+  List* curr = beg;
   int counter = 0;
-  if (startIdx) if (!checkIndex(arr, startIdx)) return -1;
+  if (startIdx) if (!checkIndex(beg, startIdx)) return -1;
   
   while (curr) {
     if (counter >= startIdx) {
@@ -78,8 +79,8 @@ int getIndexOfItem(List* arr, int item, int startIdx = 0) {
 }
 
 
-int getNumberOfEntries(List* &arr, int item) {
-  List* curr = arr;
+int getNumberOfEntries(List* &beg, int item) {
+  List* curr = beg;
   int counter = 0;
 
   while (curr) {
@@ -120,7 +121,7 @@ List* addItem(List* &beg, int data) {
   return item;
 }
 
-List* insItem( List* &beg, unsigned index, int data=0)
+List* insItem(List* &beg, unsigned index, int data=0)
 {
   if(!checkIndex(beg, index) && index != countLength(beg)) {
     cout << "\nIncorrect index value\n";
@@ -128,7 +129,7 @@ List* insItem( List* &beg, unsigned index, int data=0)
   }
 
   List * item = new List;
-  if (data != 0) data = getRandomValueFromRange(0, 99); 
+  if (data == 0) data = getRandomValueFromRange(0, 99); 
   item->data = data;
 
   if (!index || !beg) {
@@ -193,9 +194,9 @@ void delItemByValue(List* &beg, int value)
 }
 
 
-void swapElementsByIndexes(List* &arr, int index1, int index2) {
+void swapElementsByIndexes(List* &beg, int index1, int index2) {
 
-  if (!checkIndex(arr, index1) || !(checkIndex(arr, index2))) {
+  if (!checkIndex(beg, index1) || !(checkIndex(beg, index2))) {
     cout << "\nIncorrect index value(-s)\n";
     return;
   }
@@ -206,12 +207,12 @@ void swapElementsByIndexes(List* &arr, int index1, int index2) {
     index2 = buffer;
   }
 
-  List* el1m = findItemByIndex(arr, index1 - 1);
-  List* el1 = findItemByIndex(arr, index1);
-  List* el1p = findItemByIndex(arr, index1 + 1);
-  List* el2m = findItemByIndex(arr, index2 - 1);
-  List* el2 = findItemByIndex(arr, index2);
-  List* el2p = findItemByIndex(arr, index2 + 1);
+  List* el1m = findItemByIndex(beg, index1 - 1);
+  List* el1 = findItemByIndex(beg, index1);
+  List* el1p = findItemByIndex(beg, index1 + 1);
+  List* el2m = findItemByIndex(beg, index2 - 1);
+  List* el2 = findItemByIndex(beg, index2);
+  List* el2p = findItemByIndex(beg, index2 + 1);
   
   List* head2 = el2->head;
   List* tail2 = el2->tail;
@@ -238,12 +239,16 @@ void swapElementsByIndexes(List* &arr, int index1, int index2) {
   el1->tail = tail2;
 
   if (index1 != 0) el1m->tail = el2;
-  else arr = el2;
-  if (index2 != countLength(arr) - 1) el2p->head = el1;
+  else beg = el2;
+  if (index2 != countLength(beg) - 1) el2p->head = el1;
 }
 
-void printList(List* &arr) {
-  List* curr = arr;
+void printList(List* &beg) {
+  if (!beg) {
+    cout << "\nThe list is empty(((\n";
+    return;
+    }
+  List* curr = beg;
   while (curr) {
     printNode(curr);
     curr = curr->tail;
@@ -359,8 +364,19 @@ void clearArray(int* &arr, unsigned &size) {
   size = 0;
 }
 
-void printArray(int* &arr, const int size) {
+void printArray(int* &arr, const unsigned size) {
   for (int i = 0; i < size; i++) printElement(arr[i], i);
+}
+
+void increaseByNumber(int* &arr, const unsigned size, int number) {
+  for (int i = 0; i < size; i++) arr[i] += number;
+}
+
+
+void insNegativesFromArrayToList(List* &beg, int* &arr, const unsigned size) {
+  for (int i = 0; i < size; i++) { // не стал отсотрировывать массив, чтобы сохранить исходный порядок элементов
+    if (arr[i] < 0) addItem(beg, arr[i]);
+  }
 }
 
 
@@ -374,10 +390,11 @@ int main() {
   << "3) Print list" << "\n"
   << "4) Create a new array" << "\n"
   << "5) Operations with array" << "\n"
-  << "6) Print array" << "\n";
+  << "6) Print array" << "\n"
+  << "7) IDZ #12" << "\n";
 
   
-  List *list = NULL;
+  List* list = NULL;
   
   int *arr = NULL;
   unsigned arrSize = 0;
@@ -394,7 +411,7 @@ int main() {
     cin.sync();
     short int workPoint;
 
-    cout << "Select point of work (number 1 to 6): ";
+    cout << "Select point of work (number 1 to 7): ";
     cin >> workPoint;
 
     switch (workPoint)
@@ -741,8 +758,27 @@ int main() {
         printArray(arr, arrSize);
         break;
       }
+      case 7: {
+        if (!arrSize) {
+          cout << "\nArray is empty(\n";
+          break;
+        }
+        int randomNumber = getRandomValueFromRange(0, 5);
+        cout << "\nArray before:\n";
+        printArray(arr, arrSize);
+        cout << "\nRandom number is " << randomNumber << "\n";
+        increaseByNumber(arr, arrSize, randomNumber);
+        cout << "\nArray after:\n";
+        printArray(arr, arrSize);
+        cout << "\nList before:\n";
+        printList(list);
+        insNegativesFromArrayToList(list, arr, arrSize);
+        cout << "\nList after:\n";
+        printList(list);
+        break;
+      }
       default: {
-        cout << "\n" << "You did not enter a number in the range from 1 to 6";
+        cout << "\n" << "You did not enter a number in the range from 1 to 7";
         break;
       }
     }
