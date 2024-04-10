@@ -218,7 +218,7 @@ void swapElementsByIndexes(List* &arr, int index1, int index2) {
   List* head1 = el1->head;
   List* tail1 = el1->tail;
 
-  switch (abs(index1 - index2)) {
+  switch (index2 - index1) { // abs(index1 - index2)
     case 0: 
       return;
     case 1:
@@ -312,19 +312,20 @@ void printArrayItemsByData(int* &arr, const unsigned size, int data) {
 }
 
 void delArrayItemByIndex(int* &arr, unsigned &size, unsigned idx) {
-  if (!idx || !arr) {
-    if (checkArrayIndex(arr, size, idx + 1)) {
-      delete &arr[idx];
-      arr = &arr[idx + 1];
-      size--;
-      return;
-    }
-    delete arr;
-    size--;
+  if (!checkArrayIndex(arr, size, idx)) {
+    cout << "\nIncorrect index value\n";
     return;
   }
-  delete &arr[idx];
+  int* res = new int[size - 1];
+  for (int i = 0, j = 0; i < size; i++) {
+    if (i != idx) {
+      res[j] = arr[i];
+      j++;
+    }
+  }
+  delete[] arr;
   size--;
+  arr = res;
 }
 
 void delArrayItemByValue(int* &arr, unsigned &size, int data) {
@@ -371,11 +372,14 @@ int main() {
   << "1) Create a new list" << "\n"
   << "2) Operations with list" << "\n"
   << "3) Print list" << "\n"
-  << "4) Create a new array" << "\n";
+  << "4) Create a new array" << "\n"
+  << "5) Operations with array" << "\n"
+  << "6) Print array" << "\n";
 
   
   List *list = NULL;
-  int *arr = NULL; // new int[0];
+  
+  int *arr = NULL;
   unsigned arrSize = 0;
   
   int index, data;
@@ -390,7 +394,7 @@ int main() {
     cin.sync();
     short int workPoint;
 
-    cout << "Select point of work (number 1 to 4): ";
+    cout << "Select point of work (number 1 to 6): ";
     cin >> workPoint;
 
     switch (workPoint)
@@ -738,7 +742,7 @@ int main() {
         break;
       }
       default: {
-        cout << "\n" << "You did not enter a number in the range from 1 to 4";
+        cout << "\n" << "You did not enter a number in the range from 1 to 6";
         break;
       }
     }
