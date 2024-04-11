@@ -259,9 +259,8 @@ void printList(List* &beg) {
 void clearList(List* &beg) {
   if (!beg) return;
   List* curr = beg;
-  while (true) {
+  while (curr->tail) {
     if (curr->head) delItemByIndex(beg, getIndexOfItem(beg, curr->head->data)); 
-    if (!curr->tail) break; 
     curr = curr->tail;
   }
   delItemByIndex(beg, getIndexOfItem(beg, curr->data)); 
