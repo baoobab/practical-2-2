@@ -92,6 +92,7 @@ int getNumberOfEntries(List* &beg, int item) {
 
 List *createList(int length)
 {
+  if (!length) return NULL;
   List *curr = 0,
   *next = 0;
   for (int i = 1; i <= length; ++i)
@@ -383,16 +384,6 @@ void insNegativesFromArrayToList(List* &beg, int* &arr, const unsigned size) {
 int main() {
   setlocale(LC_ALL, "Russian");
   srand(time(0));
-
-  cout << "Navigation:" << "\n"
-  << "1) Create a new list" << "\n"
-  << "2) Operations with list" << "\n"
-  << "3) Print list" << "\n"
-  << "4) Create a new array" << "\n"
-  << "5) Operations with array" << "\n"
-  << "6) Print array" << "\n"
-  << "7) IDZ #12" << "\n";
-
   
   List* list = NULL;
   
@@ -407,6 +398,15 @@ int main() {
   auto end = chrono::steady_clock::now();
 
   while(true) {
+    cout << "\nNavigation:" << "\n"
+      << "1) Create a new list" << "\n"
+      << "2) Operations with list" << "\n"
+      << "3) Print list" << "\n"
+      << "4) Create a new array" << "\n"
+      << "5) Operations with array" << "\n"
+      << "6) Print array" << "\n"
+      << "7) IDZ #12" << "\n";
+
     cin.clear(); // Clearing the input stream from possible errors
     cin.sync();
     short int workPoint;
