@@ -202,6 +202,8 @@ void swapElementsByIndexes(List* &beg, int index1, int index2) {
     return;
   }
 
+  if (index1 == index2) return;
+
   if (index2 < index1) {
     int buffer = index1;
     index1 = index2;
@@ -220,22 +222,18 @@ void swapElementsByIndexes(List* &beg, int index1, int index2) {
   List* head1 = el1->head;
   List* tail1 = el1->tail;
 
-  switch (index2 - index1) { // abs(index1 - index2)
-    case 0: 
-      return;
-    case 1:
-      el2->tail = el1;
-      el1->head = el2;
-      break;
-    default:
-      el2->head = head1;
-      el2->tail = tail1;
-      el1->head = head2;
+  if (index2 - index1 == 1) {
+    el2->tail = el1;
+    el1->head = el2;    
+  } else {
+    el2->head = head1;
+    el2->tail = tail1;
+    el1->head = head2;
 
-      el1p->head = el2;
-      el2m->tail = el1;
-      break;
+    el1p->head = el2;
+    el2m->tail = el1;
   }
+
   el2->head = head1;
   el1->tail = tail2;
 
